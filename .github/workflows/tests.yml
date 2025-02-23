@@ -7,9 +7,26 @@ on:
       - main
 
 jobs:
-  # 1) Install dependencies (caches optional)
-  build:
+  cache-docker:
     runs-on: ubuntu-latest
+    steps:
+      - name: Cache Playwright Docker Image
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: playwright-docker-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            playwright-docker-${{ runner.os }}-
+
+      - name: Pre-pull Playwright Docker Image
+        run: |
+          docker pull mcr.microsoft.com/playwright:v1.50.1-noble
+
+  desktop-tests:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-noble
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -19,27 +36,11 @@ jobs:
           cd playwright
           npm install
 
-    outputs:
-      dummy-output: 'done'
-
-  # 2) Desktop tests (Chromium + Firefox, excluding performance)
-  desktop-tests:
-    runs-on: ubuntu-latest
-    needs: build
-    container:
-      image: mcr.microsoft.com/playwright:v1.50.1-noble
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Install dependencies (again)
-        run: |
-          cd playwright
-          npm install
+      # **💡 FIX: Set HOME=/root for Firefox**
       - name: Run all except mobile-chrome & performance
         run: |
           cd playwright
-          npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
+          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
 
       - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
@@ -47,10 +48,9 @@ jobs:
           name: playwright-html-report-desktop
           path: playwright/playwright-report
 
-  # 3) Mobile tests (mobile-chrome, excluding performance)
   mobile-tests:
     runs-on: ubuntu-latest
-    needs: build
+    needs: cache-docker
     container:
       image: mcr.microsoft.com/playwright:v1.50.1-noble
     steps:
@@ -73,10 +73,9 @@ jobs:
           name: playwright-html-report-mobile
           path: playwright/playwright-report
 
-  # 4) Performance tests (Chromium only, focusing on @performance)
   performance-tests:
     runs-on: ubuntu-latest
-    needs: build
+    needs: cache-docker
     container:
       image: mcr.microsoft.com/playwright:v1.50.1-noble
     steps:
@@ -99,10 +98,9 @@ jobs:
           name: playwright-html-report-performance
           path: playwright/playwright-report
 
-  # 5) K6 test (if needed)
   k6-tests:
     runs-on: ubuntu-latest
-    needs: build
+    needs: cache-docker
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
