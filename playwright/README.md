@@ -90,7 +90,12 @@ npx playwright test --project=firefox
 
 Run tests in **Mobile**:
 ```sh
-npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug'
+npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug|@visual'
+```
+
+Run tests in **Visual Comparison mode**:
+```sh
+npx playwright test tests/visual-comparison.spec.ts --project=chromium
 ```
 
 ### Run Tests in Headed Mode (With UI)
