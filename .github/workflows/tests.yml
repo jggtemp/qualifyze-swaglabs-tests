@@ -74,6 +74,13 @@ jobs:
           name: playwright-html-report-mobile
           path: playwright/playwright-report
 
+      - name: Publish Playwright HTML Report to GitHub Pages
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: playwright/playwright-report
+
   performance-tests:
     runs-on: ubuntu-latest
     needs: cache-docker
