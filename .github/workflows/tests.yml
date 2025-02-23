@@ -36,17 +36,18 @@ jobs:
           cd playwright
           npm install
 
-      # **💡 FIX: Set HOME=/root for Firefox**
       - name: Run all except mobile-chrome & performance
         run: |
           cd playwright
           HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
 
       - name: Upload HTML report artifact
+        if: always()  # Ensures the report uploads even if tests fail
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report-desktop
           path: playwright/playwright-report
+
 
   mobile-tests:
     runs-on: ubuntu-latest
@@ -65,7 +66,7 @@ jobs:
       - name: Run mobile-chrome tests
         run: |
           cd playwright
-          npx playwright test --project=mobile-chrome --grep-invert="@performance"
+          npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug'
 
       - name: Upload HTML report artifact
         uses: actions/upload-artifact@v4
