@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.0-focal
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install Playwright dependencies
+        run: |
+          cd playwright
+          npm install
+
+      - name: Run all except mobile-chrome & performance
+        run: |
+          cd playwright
+          npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-html-report
+          path: playwright/playwright-report
+
+      - name: Run mobile-chrome tests
+        run: |
+          cd playwright
+          npx playwright test --project=mobile-chrome --grep-invert="@performance"
+
+      - name: Run performance tests on chromium
+        run: |
+          cd playwright
+          npx playwright test --project=chromium --grep="@performance"
+
+      - name: Run K6 test
+        run: |
+          docker run --rm -v "$(pwd)/K6:/scripts" grafana/k6 run /scripts/performance-test.js
