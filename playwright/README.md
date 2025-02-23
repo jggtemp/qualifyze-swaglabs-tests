@@ -156,3 +156,4 @@ Generate a **JSON report**:
 ```sh
 npx playwright test --reporter=json > test-results.json
 ```
+
