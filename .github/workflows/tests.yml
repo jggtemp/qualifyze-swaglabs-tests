@@ -27,7 +27,7 @@ jobs:
           npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
 
       - name: Upload HTML report artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report
           path: playwright/playwright-report
