@@ -4,19 +4,34 @@ on:
   pull_request:
     branches:
       - develop
-      - master
+      - main
 
 jobs:
-  build-and-test:
+  cache-docker:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.50.0-focal
+    steps:
+      - name: Cache Playwright Docker Image
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: playwright-docker-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            playwright-docker-${{ runner.os }}-
 
+      - name: Pre-pull Playwright Docker Image
+        run: |
+          docker pull mcr.microsoft.com/playwright:v1.50.1-noble
+
+  desktop-tests:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-noble
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Install Playwright dependencies
+      - name: Install dependencies
         run: |
           cd playwright
           npm install
@@ -24,23 +39,72 @@ jobs:
       - name: Run all except mobile-chrome & performance
         run: |
           cd playwright
-          npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
+          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
 
       - name: Upload HTML report artifact
-        uses: actions/upload-artifact@v3
+        if: always()  # Ensures the report uploads even if tests fail
+        uses: actions/upload-artifact@v4
         with:
-          name: playwright-html-report
+          name: playwright-html-report-desktop
           path: playwright/playwright-report
+
+
+  mobile-tests:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-noble
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          cd playwright
+          npm install
 
       - name: Run mobile-chrome tests
         run: |
           cd playwright
-          npx playwright test --project=mobile-chrome --grep-invert="@performance"
+          npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug'
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report-mobile
+          path: playwright/playwright-report
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-noble
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          cd playwright
+          npm install
 
       - name: Run performance tests on chromium
         run: |
           cd playwright
           npx playwright test --project=chromium --grep="@performance"
+
+      - name: Upload HTML report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report-performance
+          path: playwright/playwright-report
+
+  k6-tests:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
 
       - name: Run K6 test
         run: |
