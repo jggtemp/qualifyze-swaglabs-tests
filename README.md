@@ -52,6 +52,11 @@ The tests can be executed **locally** or via **GitHub Actions**.
 The pipeline **automatically publishes reports** to GitHub Pages.  
 🔗 **View All Reports Here:**  
 👉 **[Test Reports Dashboard](https://jggtemp.github.io/qualifyze-swaglabs-tests/)**
+You can find failure screenshots and videos inside each failed test report.
+Examples:
+https://jggtemp.github.io/qualifyze-swaglabs-tests/desktop-bugs/index.html#?testId=65b32e862787c7fc915e-9dc12e770b5147c38e4b
+https://jggtemp.github.io/qualifyze-swaglabs-tests/visual/index.html#?testId=93f91707f26ac243999c-bd6f62f42a274e4ee0a3
+
 
 ### 📁 **Available Reports**
 | Report | Description | URL |
