@@ -188,7 +188,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: playwright-html-report-mobile
-          path: gh-pages-reports/performance
+          path: gh-pages-reports/mobile
 
       - name: Copy index.html template to reports directory
         run: cp playwright/report-template/index.html gh-pages-reports/index.html
