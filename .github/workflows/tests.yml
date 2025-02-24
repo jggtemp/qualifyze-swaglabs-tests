@@ -131,29 +131,29 @@ jobs:
           name: visual-test-screenshots
           path: playwright/screenshots/
 
-    deploy-screenshots:
-      runs-on: ubuntu-latest  # Use standard runner (not the Playwright container)
-      needs: visual-comparison  # Runs only if the visual comparison job completes
-      if: failure()  # Only deploy if the test fails
-      steps:
-        - name: Check out repository
-          uses: actions/checkout@v3
+  deploy-screenshots:
+    runs-on: ubuntu-latest  # Use standard runner (not the Playwright container)
+    needs: visual-comparison  # Runs only if the visual comparison job completes
+    if: failure()  # Only deploy if the test fails
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-        - name: Download screenshots from artifacts
-          uses: actions/download-artifact@v4
-          with:
-            name: visual-test-screenshots
-            path: playwright/screenshots/
+      - name: Download screenshots from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: visual-test-screenshots
+          path: playwright/screenshots/
 
-        - name: Install rsync (required for deployment)
-          run: sudo apt-get update && sudo apt-get install -y rsync
+      - name: Install rsync (required for deployment)
+        run: sudo apt-get update && sudo apt-get install -y rsync
 
-        - name: Deploy failed visual tests to GitHub Pages
-          uses: JamesIves/github-pages-deploy-action@v4
-          with:
-            branch: gh-pages
-            folder: playwright/screenshots/
-            clean: true
+      - name: Deploy failed visual tests to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: playwright/screenshots/
+          clean: true
 
   k6-tests:
     runs-on: ubuntu-latest
