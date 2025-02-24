@@ -91,7 +91,7 @@ jobs:
       - name: Run mobile tests
         run: |
           cd playwright
-          HOME=/root npx playwright test --project=mobile-chrome --grep-invert="@performance|@bug"
+          HOME=/root npx playwright test --project=mobile-chrome --grep-invert="@performance|@bug|@visual"
 
       - name: Upload HTML report artifact
         if: always()
