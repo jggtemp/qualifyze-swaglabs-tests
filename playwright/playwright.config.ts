@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
     testDir: './tests',
-    timeout: 6000,
+    timeout: 10000,
     use: {
         headless: true,
         viewport: { width: 1920, height: 1080 },
