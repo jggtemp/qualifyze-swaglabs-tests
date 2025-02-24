@@ -128,7 +128,7 @@ jobs:
 
   deploy-reports:
     runs-on: ubuntu-latest
-    needs: [desktop-tests-without-bugs, desktop-tests-bug, visual-comparison, performance-tests]
+    needs: [desktop-tests, desktop-tests-bug, visual-comparison, performance-tests]
     if: always()
     steps:
       - name: Check out repository
@@ -158,24 +158,17 @@ jobs:
           name: playwright-html-report-performance
           path: gh-pages-reports/performance
 
-      - name: Generate index.html for reports
-        run: |
-          echo "<html><head><title>Test Reports</title></head><body>" > gh-pages-reports/index.html
-          echo "<h1>Test Reports</h1>" >> gh-pages-reports/index.html
-          echo "<ul>" >> gh-pages-reports/index.html
-          echo "<li><a href='desktop-no-bugs/index.html'>Desktop Test Report (No Bugs)</a></li>" >> gh-pages-reports/index.html
-          echo "<li><a href='desktop-bugs/index.html'>Desktop Bug Report</a></li>" >> gh-pages-reports/index.html
-          echo "<li><a href='visual/index.html'>Visual Test Report</a></li>" >> gh-pages-reports/index.html
-          echo "<li><a href='performance/index.html'>Performance Test Report</a></li>" >> gh-pages-reports/index.html
-          echo "</ul></body></html>" >> gh-pages-reports/index.html
+      - name: Copy index.html template to reports directory
+        run: cp playwright-report-template/index.html gh-pages-reports/index.html
 
       - name: Deploy all reports to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: gh-pages-reports/
-          clean: true
+          clean: false
           token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+
 
   k6-tests:
     runs-on: ubuntu-latest
