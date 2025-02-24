@@ -1,7 +1,11 @@
 # Qualifyze Swag Labs Tests 🧪
 
 This repository contains **automated UI and performance tests** for the **Swag Labs demo application** as part of the **Qualifyze technical case**.  
-The tests are written using **Playwright** for functional and visual UI testing, and **K6** for performance testing.  
+
+The tests are written using **Playwright** for functional, performance and visual UI testing, and **K6** for an external demo API load testing.
+
+There are no integration tests because the application does not have any Back-End communication to mock. 
+
 A **GitHub Actions CI/CD pipeline** ensures tests run automatically and **publishes detailed reports to GitHub Pages**.
 
 ---
