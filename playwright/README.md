@@ -102,41 +102,6 @@ npx playwright test tests/visual-comparison.spec.ts --project=chromium
 ```sh
 npx playwright test --headed
 ```
-
-### Run Tests in Parallel (Default)
-Playwright runs tests **in parallel by default**. You can increase concurrency:
-```sh
-npx playwright test --workers=4
-```
-
-### Run Tests with Debugging Mode
-```sh
-npx playwright test --debug
-```
-
----
-
-## 🛠 Project Structure
-```
-📂 swaglabs-playwright-tests
-│── 📂 tests
-│   ├── checkout.spec.ts          # Full checkout flow test
-│   ├── checkout_bugs.spec.ts     # Bug-related checkout tests
-│   ├── login.spec.ts             # Login tests (multiple users, invalid logins)
-│── 📂 pages
-│   ├── LoginPage.ts              # Login page actions
-│   ├── InventoryPage.ts          # Product inventory page actions
-│   ├── CartPage.ts               # Shopping cart actions
-│   ├── CheckoutFormPage.ts       # Checkout form interactions
-│   ├── CheckoutOverviewPage.ts   # Checkout review page interactions
-│   ├── CheckoutCompletePage.ts   # Checkout completion validation
-│── 📂 utils
-│   ├── locators.ts               # Centralized locators file
-│── playwright.config.ts          # Playwright configuration
-│── .env                          # Environment variables (Base URL, user credentials)
-│── README.md                     # Project documentation
-```
-
 ---
 
 ## 🔖 Tags Used for Filtering
@@ -148,6 +113,7 @@ npx playwright test --debug
 | `@bug`         | Specific bug-related tests |
 | `@security`    | Security-related tests (e.g., SQL Injection) |
 | `@data-integrity` | Tests for consistency issues (e.g., shared cart bug) |
+| `@flow`        | Full user flow tests |
 | `@flow`        | Full user flow tests |
 
 ---
