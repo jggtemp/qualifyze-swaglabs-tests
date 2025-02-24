@@ -93,12 +93,12 @@ jobs:
           cd playwright
           npx playwright test tests/visual-comparison.spec.ts --project=chromium
 
-      - name: Upload visual test screenshots (only if test fails)
-        if: failure()
+      - name: Upload Playwright visual test report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: visual-test-screenshots
-          path: playwright/screenshots/
+          name: playwright-html-report-visual
+          path: playwright/playwright-report/
 
   performance-tests:
     runs-on: ubuntu-latest
@@ -128,7 +128,7 @@ jobs:
 
   deploy-reports:
     runs-on: ubuntu-latest
-    needs: [desktop-tests, desktop-tests-bug, visual-comparison, performance-tests]
+    needs: [desktop-tests-without-bugs, desktop-tests-bug, visual-comparison, performance-tests]
     if: always()
     steps:
       - name: Check out repository
@@ -146,10 +146,10 @@ jobs:
           name: playwright-html-report-desktop-bugs
           path: gh-pages-reports/desktop-bugs
 
-      - name: Download visual comparison screenshots
+      - name: Download visual test report
         uses: actions/download-artifact@v4
         with:
-          name: visual-test-screenshots
+          name: playwright-html-report-visual
           path: gh-pages-reports/visual
 
       - name: Download performance report
@@ -165,11 +165,11 @@ jobs:
           echo "<ul>" >> gh-pages-reports/index.html
           echo "<li><a href='desktop-no-bugs/index.html'>Desktop Test Report (No Bugs)</a></li>" >> gh-pages-reports/index.html
           echo "<li><a href='desktop-bugs/index.html'>Desktop Bug Report</a></li>" >> gh-pages-reports/index.html
-          echo "<li><a href='visual/'>Visual Test Screenshots</a></li>" >> gh-pages-reports/index.html
+          echo "<li><a href='visual/index.html'>Visual Test Report</a></li>" >> gh-pages-reports/index.html
           echo "<li><a href='performance/index.html'>Performance Test Report</a></li>" >> gh-pages-reports/index.html
           echo "</ul></body></html>" >> gh-pages-reports/index.html
 
-      - name: Deploy failed visual tests to GitHub Pages
+      - name: Deploy all reports to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
