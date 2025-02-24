@@ -39,6 +39,7 @@ After execution, reports are uploaded and **published to GitHub Pages**.
 The tests can be executed **locally** or via **GitHub Actions**.
 
 [Playwright README](https://github.com/jggtemp/qualifyze-swaglabs-tests/blob/main/playwright/README.md)
+[K6 README](https://github.com/jggtemp/qualifyze-swaglabs-tests/blob/main/K6/README.md)
 
 ---
 
