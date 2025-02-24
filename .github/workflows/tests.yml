@@ -160,14 +160,35 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Download and organize reports
-        run: |
-          mkdir -p gh-pages-reports
-          mv playwright-html-report-desktop-no-bugs gh-pages-reports/desktop-no-bugs
-          mv playwright-html-report-desktop-bugs gh-pages-reports/desktop-bugs
-          mv playwright-html-report-mobile gh-pages-reports/mobile
-          mv playwright-html-report-visual gh-pages-reports/visual
-          mv playwright-html-report-performance gh-pages-reports/performance
+      - name: Download desktop tests (excluding bugs)
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-desktop-no-bugs
+          path: gh-pages-reports/desktop-no-bugs
+
+      - name: Download desktop bug tests
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-desktop-bugs
+          path: gh-pages-reports/desktop-bugs
+
+      - name: Download visual test report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-visual
+          path: gh-pages-reports/visual
+
+      - name: Download performance report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-performance
+          path: gh-pages-reports/performance
+
+      - name: Download mobile report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-mobile
+          path: gh-pages-reports/performance
 
       - name: Copy index.html template to reports directory
         run: cp playwright/report-template/index.html gh-pages-reports/index.html
