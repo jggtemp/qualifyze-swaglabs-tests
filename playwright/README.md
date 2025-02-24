@@ -77,7 +77,7 @@ Have in mind this will execute 10 workers and could be CPU and memory intensive.
 npx playwright test --grep "@performance" --workers=10
 ```
 
-### Run Tests in Different Browsers
+### Run Tests in Different Browsers and Simulated Devices
 Run tests in **Chrome**:
 ```sh
 npx playwright test --project=chromium
@@ -86,6 +86,16 @@ npx playwright test --project=chromium
 Run tests in **Firefox**:
 ```sh
 npx playwright test --project=firefox
+```
+
+Run tests in **Mobile**:
+```sh
+npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug|@visual'
+```
+
+Run tests in **Visual Comparison mode**:
+```sh
+npx playwright test tests/visual-comparison.spec.ts --project=chromium
 ```
 
 ### Run Tests in Headed Mode (With UI)

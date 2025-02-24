@@ -36,20 +36,19 @@ jobs:
           cd playwright
           npm install
 
-      - name: Run all except mobile-chrome & performance
+      - name: Run desktop tests (excluding bugs)
         run: |
           cd playwright
-          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@performance"
+          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@bug|@visual|@performance"
 
       - name: Upload HTML report artifact
-        if: always()  # Ensures the report uploads even if tests fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-html-report-desktop
+          name: playwright-html-report-desktop-no-bugs
           path: playwright/playwright-report
 
-
-  mobile-tests:
+  desktop-tests-bug:
     runs-on: ubuntu-latest
     needs: cache-docker
     container:
@@ -63,16 +62,43 @@ jobs:
           cd playwright
           npm install
 
-      - name: Run mobile-chrome tests
+      - name: Run desktop tests (only bugs)
         run: |
           cd playwright
-          npx playwright test --project=mobile-chrome --grep-invert='@performance|@bug'
+          HOME=/root npx playwright test --project=chromium --project=firefox --grep="@bug"
 
       - name: Upload HTML report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-html-report-mobile
+          name: playwright-html-report-desktop-bugs
           path: playwright/playwright-report
+
+  visual-comparison:
+    runs-on: ubuntu-latest
+    needs: cache-docker
+    container:
+      image: mcr.microsoft.com/playwright:v1.50.1-noble
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          cd playwright
+          npm install
+
+      - name: Run visual comparison test (Chromium only)
+        run: |
+          cd playwright
+          npx playwright test tests/visual-comparison.spec.ts --project=chromium
+
+      - name: Upload Playwright visual test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report-visual
+          path: playwright/playwright-report/
 
   performance-tests:
     runs-on: ubuntu-latest
@@ -94,10 +120,55 @@ jobs:
           npx playwright test --project=chromium --grep="@performance"
 
       - name: Upload HTML report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report-performance
           path: playwright/playwright-report
+
+  deploy-reports:
+    runs-on: ubuntu-latest
+    needs: [desktop-tests, desktop-tests-bug, visual-comparison, performance-tests]
+    if: always()
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Download desktop tests (excluding bugs)
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-desktop-no-bugs
+          path: gh-pages-reports/desktop-no-bugs
+
+      - name: Download desktop bug tests
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-desktop-bugs
+          path: gh-pages-reports/desktop-bugs
+
+      - name: Download visual test report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-visual
+          path: gh-pages-reports/visual
+
+      - name: Download performance report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report-performance
+          path: gh-pages-reports/performance
+
+      - name: Copy index.html template to reports directory
+        run: cp playwright/report-template/index.html gh-pages-reports/index.html
+
+      - name: Deploy all reports to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: gh-pages-reports/
+          clean: false
+          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+
 
   k6-tests:
     runs-on: ubuntu-latest

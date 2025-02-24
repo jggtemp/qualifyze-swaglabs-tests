@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reports - Qualifyze Technical Case</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .sidebar {
+            width: 250px;
+            background: #003d80;
+            color: white;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin-bottom: 12px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            background: #007BFF;
+            padding: 10px;
+            border-radius: 6px;
+            display: block;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+        .sidebar a:hover {
+            background: #0056b3;
+            transform: translateX(5px);
+        }
+        .content {
+            margin-left: 270px;
+            padding: 40px;
+            max-width: 900px;
+        }
+        .content h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        .content p {
+            font-size: 16px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .content a {
+            color: #0056b3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .content a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>📊 Test Reports</h2>
+    <ul>
+        <li><a href="desktop-no-bugs/index.html">🖥️ Desktop Report (No Bugs)</a></li>
+        <li><a href="desktop-bugs/index.html">🐞 Desktop Bug Report</a></li>
+        <li><a href="visual/index.html">🖼️ Visual Test Report</a></li>
+        <li><a href="performance/index.html">⚡ Performance Report</a></li>
+        <li><a href="https://github.com/jggtemp/qualifyze-swaglabs-tests/blob/main/K6/results.txt" target="_blank">📊 K6 Load Test Results</a></li>
+    </ul>
+</div>
+
+<div class="content">
+    <h1>Qualifyze Technical Case - Test Reports</h1>
+    <p>
+        This project contains **automated test reports** as part of the
+        <strong>Qualifyze technical case</strong>. Below you will find different test reports executed during the pipeline.
+    </p>
+    <p>
+        These reports include:
+    </p>
+    <ul style="margin-bottom: 15px;">
+        <li>✅ <strong>Desktop Test Reports:</strong> Functional UI tests for web browsers.</li>
+        <li>🐞 <strong>Bug Reports:</strong> Tests designed to expose known issues.</li>
+        <li>🖼️ <strong>Visual Reports:</strong> UI comparison tests using Playwright & Pixelmatch.</li>
+        <li>⚡ <strong>Performance Tests:</strong> Load testing with Playwright. And also com laod tests performed with K6 on an external API</li>
+    </ul>
+    <p>
+        📌 You can also view the **raw K6 performance test results**
+        <a href="https://github.com/jggtemp/qualifyze-swaglabs-tests/blob/main/K6/results.txt" target="_blank">here</a>.
+    </p>
+</div>
+</body>
+</html>
