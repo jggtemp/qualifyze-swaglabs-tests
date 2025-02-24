@@ -39,7 +39,7 @@ jobs:
       - name: Run desktop tests (excluding bugs)
         run: |
           cd playwright
-          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@bug"
+          HOME=/root npx playwright test --project=chromium --project=firefox --grep-invert="@bug|@visual|@performance"
 
       - name: Upload HTML report artifact
         if: always()
@@ -169,14 +169,13 @@ jobs:
           echo "<li><a href='performance/index.html'>Performance Test Report</a></li>" >> gh-pages-reports/index.html
           echo "</ul></body></html>" >> gh-pages-reports/index.html
 
-      - name: Deploy all reports to GitHub Pages
+      - name: Deploy failed visual tests to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: gh-pages-reports/
-          clean: false  # Keep previous reports
-
-
+          folder: playwright/screenshots/
+          clean: true
+          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
 
   k6-tests:
     runs-on: ubuntu-latest
