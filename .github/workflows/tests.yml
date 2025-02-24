@@ -159,7 +159,7 @@ jobs:
           path: gh-pages-reports/performance
 
       - name: Copy index.html template to reports directory
-        run: cp report-template/index.html gh-pages-reports/index.html
+        run: cp playwright/report-template/index.html gh-pages-reports/index.html
 
       - name: Deploy all reports to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
